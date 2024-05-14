@@ -35,7 +35,10 @@ export async function onRequestPost(context) {
             // 修改协议为https
             _URL.protocol = 'https:';
             responseData.data.uploadPath = _URL
-            await insertImageData(env.IMG, _URL, Referer, clientIP, 6, formattedDate);
+            if(env.IMG){
+                await insertImageData(env.IMG, _URL, Referer, clientIP, 6, formattedDate);
+            }
+            
             return Response.json(responseData, {
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -58,8 +61,12 @@ export async function onRequestPost(context) {
 
 
 async function insertImageData(env, src, referer, ip, rating, time) {
+try {
     const instdata = await env.prepare(
         `INSERT INTO imginfo (url, referer, ip, rating, total, time)
              VALUES ('${src}', '${referer}', '${ip}', ${rating}, 1, '${time}')`
     ).run();
+} catch (error) {
+    
+}
 }
